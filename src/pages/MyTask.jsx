@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { useState } from "react";
 import plus from "../assets/plus.png";
 import task from "../../MyTask";
-import edit from "../assets/edit.png";
+import editIcon from "../assets/edit.png";
 import deletee from "../assets/delete.png";
 import line from "../assets/line.png";
 
@@ -89,7 +89,7 @@ const MyTask = () => {
                       }}
                       className="flex items-center gap-2 px-[25px] py-[10px] text-[24px] cursor-pointer text-[#FAF9FB] bg-[#974FD0] rounded-[8px]"
                     >
-                      <img src={edit} alt="" />
+                      <img src={editIcon} alt="" />
                       <p className="hidden lg:block">Edit</p>
                     </button>
                     <button className="flex items-center gap-2 px-[25px] py-[10px] text-[24px] cursor-pointer bg-[#FAF9FB] border border-[#974FD0] rounded-[8px]">
