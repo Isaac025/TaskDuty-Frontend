@@ -1,0 +1,12 @@
+@import "tailwindcss";
+.container {
+  @apply max-w-[1240px] w-full mx-auto p-4;
+}
+
+.styled-input::placeholder {
+  @apply font-[400] text-[20px] md:text-[22px] text-[#CCCCCC];
+}
+
+.styled-input {
+  @apply font-[600] text-[20px] md:text-[22px] text-[#000000]  p-[40px];
+}
