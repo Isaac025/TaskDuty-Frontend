@@ -7,7 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { useState } from "react";
 import plus from "../assets/plus.png";
 import task from "../../MyTask";
-import deletee from "../assets/delete.png";
+import deletee from "../assets/Delete.png";
 import line from "../assets/line.png";
 
 const MyTask = () => {
