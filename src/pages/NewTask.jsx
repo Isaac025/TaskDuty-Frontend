@@ -98,10 +98,16 @@ const NewTask = () => {
                 className="w-full h-full pl-[40px] pr-10 outline-none border-none focus:ring-0 absolute top-0 left-0 appearance-none bg-transparent"
               >
                 <option disabled={true}>Select Tag</option>
-                <option className="font-[400] text-[20px] md:text-[22px] text-[#CCCCCC] rounded-[3px]">
+                <option
+                  value="urgent"
+                  className="font-[400] text-[20px] md:text-[22px] text-[#CCCCCC] rounded-[3px]"
+                >
                   Urgent
                 </option>
-                <option className="font-[400] text-[20px] md:text-[22px] text-[#CCCCCC] rounded-[3px]">
+                <option
+                  value="important"
+                  className="font-[400] text-[20px] md:text-[22px] text-[#CCCCCC] rounded-[3px]"
+                >
                   Important
                 </option>
               </select>

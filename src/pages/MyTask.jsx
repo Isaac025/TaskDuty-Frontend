@@ -4,16 +4,48 @@ import imgg from "../assets/Ellipse1.png";
 import { Link, useNavigate } from "react-router-dom";
 import { BiEdit, BiMenu } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import plus from "../assets/plus.png";
 import task from "../../MyTask";
 import deletee from "../assets/Delete.png";
 import line from "../assets/line.png";
+import { axiosInstance } from "../utils/axiosInstance";
+import Loading from "../../components/Loading";
+import { toast } from "react-toastify";
 
 const MyTask = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [task, setTask] = useState([]);
 
   const redirect = useNavigate();
+
+  const getAllTask = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axiosInstance.get("/task");
+      const { data } = response;
+      if (response.status === 200) {
+        setTask(data.tasks);
+        return toast.success(data.message);
+      } else {
+        return toast.error(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getAllTask();
+  }, []);
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="border-b-[0.5px] border-b-[#B8B6B6] h-[93px]">
