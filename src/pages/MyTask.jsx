@@ -12,6 +12,8 @@ import line from "../assets/line.png";
 import { axiosInstance } from "../utils/axiosInstance";
 import Loading from "../../components/Loading";
 import { toast } from "react-toastify";
+import DeleteModal from "../../components/DeleteModal";
+import Empty from "../../components/Empty";
 
 const MyTask = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -23,7 +25,7 @@ const MyTask = () => {
   const getAllTask = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get("/task");
+      const response = await axiosInstance.get("/");
       const { data } = response;
       if (response.status === 200) {
         setTask(data.tasks);
@@ -39,12 +41,36 @@ const MyTask = () => {
     }
   };
 
+  const deleteTask = async (taskId) => {
+    const confirm = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
+    if (!confirm) return;
+    try {
+      const response = await axiosInstance.delete(`/${taskId}`);
+      const { data } = response;
+      if (response.status === 200) {
+        toast.success(data.message || "Task deleted successfully");
+        await getAllTask();
+      } else {
+        toast.error(data.message || "Failed to delete task");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   useEffect(() => {
     getAllTask();
   }, []);
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (!isLoading && task.length === 0) {
+    return <Empty />;
   }
 
   return (
@@ -99,23 +125,23 @@ const MyTask = () => {
           {task.map((item) => {
             return (
               <div
-                key={item.id}
+                key={item._id}
                 className="h-[287px] w-full border-[0.5px] border-[#B8B6B6] rounded-[10px] p-5"
               >
                 <div className="flex items-center justify-between ">
                   <h2
                     className={`${
-                      item.status === "Urgent"
+                      item.tag === "urgent"
                         ? "text-[#F38383]"
                         : "text-[#73C3A6]"
                     } font-[400] text-[24px] `}
                   >
-                    {item.status}
+                    {item.tag.charAt(0).toUpperCase() + item.tag.slice(1)}
                   </h2>
                   <div className="flex items-center gap-2 lg:gap-3 ">
                     <button
                       onClick={() => {
-                        redirect("/edit-task");
+                        redirect(`/edit-task/${item._id}`);
                         scrollTo(0, 0);
                       }}
                       className="flex items-center gap-2 px-[25px] py-[10px] text-[24px] cursor-pointer text-[#FAF9FB] bg-[#974FD0] rounded-[8px]"
@@ -123,15 +149,18 @@ const MyTask = () => {
                       <BiEdit size={30} color="#FAF9FB" />
                       <p className="hidden lg:block">Edit</p>
                     </button>
-                    <button className="flex items-center gap-2 px-[25px] py-[10px] text-[24px] cursor-pointer bg-[#FAF9FB] border border-[#974FD0] rounded-[8px]">
+                    <button
+                      onClick={() => deleteTask(item._id)}
+                      className="flex items-center gap-2 px-[25px] py-[10px] text-[24px] cursor-pointer bg-[#FAF9FB] border border-[#974FD0] rounded-[8px]"
+                    >
                       <img src={deletee} alt="" />
                       <p className="hidden lg:block">Delete</p>
                     </button>
                   </div>
                 </div>
                 <img src={line} alt="" className="w-full mt-4" />
-                <div className="flex flex-col gap-2">
-                  <h1 className="text-[25px] md:text-[35px] font-400 text-[#292929]">
+                <div className=" flex flex-col gap-2">
+                  <h1 className=" text-[25px] md:text-[35px] font-400 text-[#292929]">
                     {item.title}
                   </h1>
                   <p className="font-[400] text-[16px] md:text-[24px] text-[#737171] tracking-[0%] leading-[100%]">

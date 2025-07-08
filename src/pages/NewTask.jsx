@@ -7,11 +7,64 @@ import { IoClose } from "react-icons/io5";
 import { useState } from "react";
 import back from "../assets/back.png";
 import down from "../assets/down.png";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { axiosInstance } from "../utils/axiosInstance";
+import { toast } from "react-toastify";
+
+const schema = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  description: yup.string().required("Description is required"),
+  tag: yup.string().required("Tag is required"),
+});
 
 const NewTask = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const redirect = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  const taskSubmit = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      const response = await axiosInstance.post("/new-task", {
+        title: formData.title,
+        description: formData.description,
+        tag: formData.tag,
+      });
+
+      const { data } = response;
+
+      if (response.status === 201) {
+        toast.success(data.message || "Task created successfully!");
+        reset();
+        redirect("/my-task");
+        window.scrollTo(0, 0);
+        console.log(data);
+      } else if (response.status === 400) {
+        toast.error(data.message || "Invalid request data");
+      } else {
+        toast.error(data.message || "Something went wrong");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error?.response?.data?.message);
+      setTitle("");
+      setDescription("");
+      setTag("");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="border-b-[0.5px] border-b-[#B8B6B6] h-[93px]">
@@ -59,7 +112,7 @@ const NewTask = () => {
           <h1>New Task</h1>
         </div>
 
-        <form>
+        <form onSubmit={handleSubmit(taskSubmit)}>
           {/* Input with integrated fieldset */}
           <div className="relative mt-5">
             <fieldset className="border-[#B8B6B6] border h-[84px] rounded-[5px]">
@@ -68,10 +121,14 @@ const NewTask = () => {
               </legend>
               <input
                 type="text"
+                {...register("title")}
                 placeholder="E.g Project Defense, Assignment ..."
                 className="w-full h-full p-10 border-none focus:ring-0 absolute top-0 left-0 bg-transparent outline-none"
               />
             </fieldset>
+            <p className={`${errors ? "text-red-500" : ""}`}>
+              {errors?.title?.message}
+            </p>
           </div>
 
           {/* Textarea with integrated fieldset */}
@@ -81,10 +138,14 @@ const NewTask = () => {
                 Description
               </legend>
               <textarea
+                {...register("description")}
                 className="w-full h-full p-10 pb-2 border-none outline-none focus:ring-0 absolute top-0 left-0 bg-transparent resize-none"
                 placeholder="Briefly describe your task..."
               ></textarea>
             </fieldset>
+            <p className={`${errors ? "text-red-500" : ""}`}>
+              {errors?.description?.message}
+            </p>
           </div>
 
           {/* Select with integrated fieldset */}
@@ -94,6 +155,7 @@ const NewTask = () => {
                 Tag
               </legend>
               <select
+                {...register("tag")}
                 defaultValue="select Tag"
                 className="w-full h-full pl-[40px] pr-10 outline-none border-none focus:ring-0 absolute top-0 left-0 appearance-none bg-transparent"
               >
@@ -113,15 +175,12 @@ const NewTask = () => {
               </select>
               <img src={down} alt="" className="absolute top-[40px] right-5" />
             </fieldset>
+            <p className={`${errors ? "text-red-500" : ""}`}>
+              {errors?.tag?.message}
+            </p>
           </div>
-          <button
-            className="bg-[#974FD0] w-full rounded-[8px] h-[84px] text-[#FAF9FB] font-medium text-[25px] md:text-[35px]"
-            onClick={() => {
-              redirect("/my-task");
-              scrollTo(0, 0);
-            }}
-          >
-            Done
+          <button className="bg-[#974FD0] w-full rounded-[8px] h-[84px] cursor-pointer text-[#FAF9FB] font-medium text-[25px] md:text-[35px]">
+            {isSubmitting ? "Submitting..." : "Create Task"}
           </button>
         </form>
         <button
