@@ -36,21 +36,21 @@ const EditTask = () => {
     resolver: yupResolver(schema),
   });
 
-  // useEffect(() => {
-  //   const fetchTask = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/${id}`);
-  //       reset(response.data.task); // Pre-fill the form with existing data
-  //     } catch (error) {
-  //       toast.error("Failed to load task data");
-  //       redirect("/my-task");
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
+  const fetchTask = async () => {
+    try {
+      const response = await axiosInstance.get(`/${id}`);
+      reset(response.data.task); // Pre-fill the form with existing data
+    } catch (error) {
+      toast.error("Failed to load task data");
+      redirect("/my-task");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  //   fetchTask();
-  // }, [id, reset, redirect]);
+  useEffect(() => {
+    fetchTask();
+  }, [id, reset, redirect]);
 
   const onSubmit = async (formData) => {
     setIsSubmitting(true);
@@ -84,13 +84,13 @@ const EditTask = () => {
     }
   };
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen">
-  //       <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-  //     </div>
-  //   );
-  // }
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="border-b-[0.5px] border-b-[#B8B6B6] h-[93px]">
