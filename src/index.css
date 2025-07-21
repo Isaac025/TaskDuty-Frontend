@@ -10,3 +10,7 @@
 .styled-input {
   @apply font-[600] text-[20px] md:text-[22px] text-[#000000]  p-[40px];
 }
+
+.labell {
+  @apply text-[#974FD0] text-[16px] md:text-[20px];
+}

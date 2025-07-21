@@ -95,7 +95,7 @@ const EditTask = () => {
   return (
     <div className="border-b-[0.5px] border-b-[#B8B6B6] h-[93px]">
       <nav className="container flex items-center justify-between ">
-        <Link to="/">
+        <Link to="/home">
           <img src={logo} alt="logo" />
         </Link>
         <div className="hidden  lg:flex items-center gap-7 text-[#292929] text-[22px] font-500">
