@@ -2,13 +2,16 @@ import React from "react";
 import bro from "../assets/bro.png";
 import logo from "../assets/Group2.png";
 import imgg from "../assets/Ellipse1.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BiMenu } from "react-icons/bi";
 import { IoClose } from "react-icons/io5";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { toast } from "react-toastify";
+import { axiosInstance } from "../utils/axiosInstance";
+import { PiWarningCircle } from "react-icons/pi";
 
 const registerSchema = yup.object().shape({
   fullName: yup.string().required("Full name is required"),
@@ -26,6 +29,10 @@ const registerSchema = yup.object().shape({
 
 const Signup = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const redirect = useNavigate();
 
   const {
     register,
@@ -35,9 +42,21 @@ const Signup = () => {
     resolver: yupResolver(registerSchema),
   });
 
-  const handleRegister = async () => {
+  const handleRegister = async (data) => {
+    setIsSubmitting(true);
     try {
-    } catch (error) {}
+      const response = await axiosInstance.post("/user/register", { ...data });
+      const { data: mydata } = response;
+      if (response.status === 201) {
+        toast.success(mydata.message);
+        redirect("/login");
+      }
+    } catch (error) {
+      console.error(error);
+      setErrorMessage(error?.response?.data?.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -141,9 +160,18 @@ const Signup = () => {
             {errors.phoneNumber && (
               <p className="text-red-600">{errors.phoneNumber.message}</p>
             )}
-            <button className="bg-[#974FD0] text-white rounded-md w-full h-[50px] text-[20px] md:text-[22px] my-2 cursor-pointer">
-              Register
+            <button
+              disabled={isSubmitting}
+              className="bg-[#974FD0] text-white rounded-md w-full h-[50px] text-[20px] md:text-[22px] my-2 cursor-pointer"
+            >
+              {isSubmitting ? "Registering..." : "Register"}
             </button>
+            {errorMessage && (
+              <div className="w-full rounded-xl py-2 my-2.5 px-4 bg-[#FF37370D] border border-[#ff3737] text-[#ff3737] flex items-center gap-3">
+                <PiWarningCircle size={22} />
+                <p>{errorMessage}</p>
+              </div>
+            )}
             <p className="text-center text-[#292929] text-[18px]">
               Already have an account{" "}
               <a href="/login" className="text-[#974FD0] underline">

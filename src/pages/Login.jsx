@@ -9,6 +9,11 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useAppContext } from "../../hooks/useAppContext";
+import Loading from "../../components/Loading";
+import { axiosInstance } from "../utils/axiosInstance";
+import { PiWarningCircle } from "react-icons/pi";
+import { toast } from "react-toastify";
 
 const loginSchema = yup.object().shape({
   email: yup
@@ -28,6 +33,7 @@ const Login = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const redirect = useNavigate();
+  const { login } = useAppContext();
 
   const {
     register,
@@ -37,10 +43,29 @@ const Login = () => {
     resolver: yupResolver(loginSchema),
   });
 
-  const handleLogin = async () => {
+  const handleLogin = async (data) => {
+    console.log("Form Submitted:", data);
     setIsSubmitting(true);
     try {
+      const response = await axiosInstance.post("/user/login", data);
+      const { data: myData } = response;
+      console.log(myData);
+      if (response.status === 200) {
+        toast.success(myData.message);
+        login(myData.user, myData.token);
+        redirect("/home");
+      } else if (response.status === 400) {
+        toast.error(
+          myData.message ||
+            "User not found, Please Register" ||
+            "Please all fields"
+        );
+      } else if (response.status === 401) {
+        toast.error("Invalid Email or Password");
+      }
     } catch (error) {
+      console.error(error);
+      setErrorMessage(error?.response?.data?.message || "Login Failed");
     } finally {
       setIsSubmitting(false);
     }
@@ -132,11 +157,7 @@ const Login = () => {
               disabled={isSubmitting}
               className="bg-[#974FD0] text-white rounded-md w-full h-[50px] text-[20px] md:text-[22px] my-2 cursor-pointer"
             >
-              {isSubmitting ? (
-                <span className="loading loading-spinner loading-md text-black"></span>
-              ) : (
-                "Login"
-              )}
+              {isSubmitting ? "Sigining In" : "Login"}
             </button>
             <p className="text-center text-[#292929] text-[18px]">
               Don't have an account{" "}

@@ -1,0 +1,14 @@
+-- AppProvider component is a wrapper that manages the state and provides it to child components
+
+1.. state initialization  -- runs once when component mounts, checks local storage for existing auth data, if fouind, updates state with the stored value (const storedToken = localStorage.getItem("accessToken"); const storedUser = localStorage.getItem("user"))
+if(storedToken && storedUser) {
+  setToken(storedToken);
+  setUser(JSON.parse(storedUser))
+}
+2.. auth methods 
+a. const login = (accessToken, user) => {
+  setToken(accessToken)
+  setUser(user)
+  localStorage.setItem("accessToken", accessToken )
+  localStorage.setItem("user", JSON.stringify(user))
+}

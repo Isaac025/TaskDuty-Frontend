@@ -25,7 +25,7 @@ const MyTask = () => {
   const getAllTask = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get("/");
+      const response = await axiosInstance.get("/task");
       const { data } = response;
       if (response.status === 200) {
         setTask(data.tasks);
@@ -47,7 +47,7 @@ const MyTask = () => {
     );
     if (!confirm) return;
     try {
-      const response = await axiosInstance.delete(`/${taskId}`);
+      const response = await axiosInstance.delete(`task/${taskId}`);
       const { data } = response;
       if (response.status === 200) {
         toast.success(data.message || "Task deleted successfully");

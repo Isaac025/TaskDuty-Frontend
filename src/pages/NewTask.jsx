@@ -36,7 +36,7 @@ const NewTask = () => {
   const taskSubmit = async (formData) => {
     setIsSubmitting(true);
     try {
-      const response = await axiosInstance.post("/new-task", {
+      const response = await axiosInstance.post("task/new-task", {
         title: formData.title,
         description: formData.description,
         tag: formData.tag,
@@ -179,7 +179,10 @@ const NewTask = () => {
               {errors?.tag?.message}
             </p>
           </div>
-          <button className="bg-[#974FD0] w-full rounded-[8px] h-[84px] cursor-pointer text-[#FAF9FB] font-medium text-[25px] md:text-[35px]">
+          <button
+            disabled={isSubmitting}
+            className="bg-[#974FD0] w-full rounded-[8px] h-[84px] cursor-pointer text-[#FAF9FB] font-medium text-[25px] md:text-[35px]"
+          >
             {isSubmitting ? "Submitting..." : "Create Task"}
           </button>
         </form>

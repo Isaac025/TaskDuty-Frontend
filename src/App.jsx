@@ -18,6 +18,7 @@ function App() {
           <Route path="/new-task" element={<NewTask />} />
           <Route path="/my-task" element={<MyTask />} />
           <Route path="/edit-task/:id" element={<EditTask />} />
+
           <Route path="/sign-up" element={<Signup />} />
           <Route path="/login" element={<Login />} />
         </Routes>

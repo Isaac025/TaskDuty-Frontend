@@ -38,7 +38,7 @@ const EditTask = () => {
 
   const fetchTask = async () => {
     try {
-      const response = await axiosInstance.get(`/${id}`);
+      const response = await axiosInstance.get(`task/${id}`);
       reset(response.data.task); // Pre-fill the form with existing data
     } catch (error) {
       toast.error("Failed to load task data");
@@ -56,7 +56,7 @@ const EditTask = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axiosInstance.patch(`/${id}`, formData);
+      const response = await axiosInstance.patch(`task/${id}`, formData);
       const { data } = response;
 
       toast.success(data.message || "Task updated successfully!");
