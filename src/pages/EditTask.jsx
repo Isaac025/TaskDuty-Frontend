@@ -13,6 +13,7 @@ import { set } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useForm } from "react-hook-form";
+import { useAppContext } from "../../hooks/useAppContext";
 
 const schema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -26,6 +27,7 @@ const EditTask = () => {
   const [isLoading, setIsLoading] = useState(true);
   const redirect = useNavigate();
   const { id } = useParams();
+  const { token } = useAppContext();
 
   const {
     register,
@@ -38,7 +40,9 @@ const EditTask = () => {
 
   const fetchTask = async () => {
     try {
-      const response = await axiosInstance.get(`task/${id}`);
+      const response = await axiosInstance.get(`task/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       reset(response.data.task); // Pre-fill the form with existing data
     } catch (error) {
       toast.error("Failed to load task data");
@@ -56,7 +60,9 @@ const EditTask = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await axiosInstance.patch(`task/${id}`, formData);
+      const response = await axiosInstance.patch(`task/${id}`, formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const { data } = response;
 
       toast.success(data.message || "Task updated successfully!");

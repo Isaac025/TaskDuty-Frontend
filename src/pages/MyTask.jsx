@@ -12,26 +12,27 @@ import line from "../assets/line.png";
 import { axiosInstance } from "../utils/axiosInstance";
 import Loading from "../../components/Loading";
 import { toast } from "react-toastify";
-import DeleteModal from "../../components/DeleteModal";
 import Empty from "../../components/Empty";
+import { useAppContext } from "../../hooks/useAppContext";
 
 const MyTask = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [task, setTask] = useState([]);
+  const { token } = useAppContext();
 
   const redirect = useNavigate();
 
   const getAllTask = async () => {
     setIsLoading(true);
     try {
-      const response = await axiosInstance.get("/task");
+      const response = await axiosInstance.get("/task", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const { data } = response;
       if (response.status === 200) {
         setTask(data.tasks);
         return toast.success(data.message);
-      } else {
-        return toast.error(data.message);
       }
     } catch (error) {
       console.error(error);
@@ -47,7 +48,9 @@ const MyTask = () => {
     );
     if (!confirm) return;
     try {
-      const response = await axiosInstance.delete(`task/${taskId}`);
+      const response = await axiosInstance.delete(`task/${taskId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       const { data } = response;
       if (response.status === 200) {
         toast.success(data.message || "Task deleted successfully");

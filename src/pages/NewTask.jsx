@@ -12,6 +12,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { axiosInstance } from "../utils/axiosInstance";
 import { toast } from "react-toastify";
+import { useAppContext } from "../../hooks/useAppContext";
 
 const schema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -22,6 +23,7 @@ const schema = yup.object().shape({
 const NewTask = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { token } = useAppContext();
 
   const redirect = useNavigate();
 
@@ -36,11 +38,15 @@ const NewTask = () => {
   const taskSubmit = async (formData) => {
     setIsSubmitting(true);
     try {
-      const response = await axiosInstance.post("task/new-task", {
-        title: formData.title,
-        description: formData.description,
-        tag: formData.tag,
-      });
+      const response = await axiosInstance.post(
+        "task/new-task",
+        {
+          title: formData.title,
+          description: formData.description,
+          tag: formData.tag,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
       const { data } = response;
 

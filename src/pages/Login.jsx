@@ -52,7 +52,7 @@ const Login = () => {
       console.log(myData);
       if (response.status === 200) {
         toast.success(myData.message);
-        login(myData.user, myData.token);
+        login(myData.token, myData.user);
         redirect("/home");
       } else if (response.status === 400) {
         toast.error(

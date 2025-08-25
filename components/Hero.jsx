@@ -1,9 +1,19 @@
 import React from "react";
 import bro from "../src/assets/bro.png";
 import { useNavigate } from "react-router-dom";
+import { useAppContext } from "../hooks/useAppContext";
 
 const Hero = () => {
   const redirect = useNavigate();
+  const { user, token } = useAppContext();
+
+  const handleGetTask = () => {
+    if (user || token) {
+      redirect("/my-task");
+    } else {
+      redirect("/login");
+    }
+  };
 
   return (
     <div className="container flex flex-col-reverse lg:flex-row gap-4 lg:gap-0 items-center lg:justify-between">
@@ -19,7 +29,7 @@ const Hero = () => {
         </p>
 
         <button
-          onClick={() => redirect("/my-task")}
+          onClick={handleGetTask}
           className="text-[#FAF9FB] bg-[#974FD0] text-[24px] w-[220px] h-[50px] cursor-pointer rounded-[8px]  "
         >
           Go to My Tasks

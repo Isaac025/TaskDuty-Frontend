@@ -5,7 +5,6 @@ export const appContext = createContext();
 const AppProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedToken = localStorage.getItem("accessToken");
@@ -14,8 +13,6 @@ const AppProvider = ({ children }) => {
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
     }
-
-    setLoading(false);
   }, []);
 
   const login = (accessToken, user) => {
@@ -33,18 +30,13 @@ const AppProvider = ({ children }) => {
   };
 
   return (
-    <appContext.Provider
-      value={{
-        login,
-        logout,
-        token,
-        loading,
-        user,
-      }}
-    >
+    <appContext.Provider value={{ login, logout, user, token }}>
       {children}
     </appContext.Provider>
   );
 };
+
+//useContext hook
+//appcontext
 
 export default AppProvider;
