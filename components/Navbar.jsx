@@ -47,7 +47,7 @@ const Navbar = () => {
             <Link to="/my-task">All Tasks</Link>
             <button
               onClick={handleLogout}
-              className="bg-red-500 text-white py-2 px-4 rounded-md"
+              className="bg-red-500 text-white py-2 px-4 rounded-md cursor-pointer"
             >
               Logout
             </button>

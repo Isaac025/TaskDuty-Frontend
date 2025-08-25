@@ -157,7 +157,11 @@ const Login = () => {
               disabled={isSubmitting}
               className="bg-[#974FD0] text-white rounded-md w-full h-[50px] text-[20px] md:text-[22px] my-2 cursor-pointer"
             >
-              {isSubmitting ? "Sigining In" : "Login"}
+              {isSubmitting ? (
+                <span className="loading loading-spinner loading-md text-black"></span>
+              ) : (
+                "Login"
+              )}
             </button>
             <p className="text-center text-[#292929] text-[18px]">
               Don't have an account{" "}

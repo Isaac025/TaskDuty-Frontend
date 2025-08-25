@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@plugin "daisyui";
+
 .container {
   @apply max-w-[1240px] w-full mx-auto p-4;
 }
